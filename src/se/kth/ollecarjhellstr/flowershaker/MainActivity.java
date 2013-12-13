@@ -1,6 +1,8 @@
 package se.kth.ollecarjhellstr.flowershaker;
 
 import se.kth.ollecarjhellstr.floweshaker.R;
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -15,6 +17,14 @@ import android.widget.TextView;
 
 @SuppressLint({ "InlinedApi", "NewApi" })
 public class MainActivity extends Activity {
+	
+	TextView sensor1text;
+	TextView sensor2text;
+	TextView sensor3text;
+	
+	private final String yaw = "YAW: ";
+	private final String pitch = "PITCH: ";
+	private final String roll = "ROLL: ";
 
 	TextView xText;
 	TextView yText;
@@ -38,8 +48,8 @@ public class MainActivity extends Activity {
 		
 		SensorManager sm = (SensorManager) getSystemService(SENSOR_SERVICE);
 		Sensor s = sm.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+		
 		SensorEventListener sel = new SensorEventListener() {
-			
 			@Override
 			public void onSensorChanged(SensorEvent event) {
 				if(event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR){
