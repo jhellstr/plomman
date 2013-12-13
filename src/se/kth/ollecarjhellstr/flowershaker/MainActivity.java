@@ -1,5 +1,7 @@
 package se.kth.ollecarjhellstr.flowershaker;
 
+import java.util.Timer;
+
 import se.kth.ollecarjhellstr.floweshaker.R;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -8,9 +10,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.util.Log;
 import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,6 +31,9 @@ public class MainActivity extends Activity {
 	ImageView blomman;
 	ImageView loven;
 	
+	Timer timer;
+	
+	Long timerFloat = 0l;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,8 @@ public class MainActivity extends Activity {
 		blomman = (ImageView) findViewById(R.id.plommanView);
 		
 		SensorManager sm = (SensorManager) getSystemService(SENSOR_SERVICE);
+		
+		
 		Sensor s = sm.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
 		
 		SensorEventListener sel = new SensorEventListener() {
@@ -68,6 +72,18 @@ public class MainActivity extends Activity {
 					loven.setPivotX(blomman.getWidth()/2);
 					loven.setPivotY(blomman.getHeight());
 					loven.setRotation((float) Math.toDegrees(orientation[2]));
+					}
+				else if(event.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
+					double acc = ((Math.pow(event.values[0],2) + Math.pow(event.values[1],2) + Math.pow(event.values[2],2))/(Math.pow(SensorManager.GRAVITY_EARTH,2)));
+					if(acc > 2.0){
+						if((System.currentTimeMillis() - timerFloat) > 1000l){
+							loven.animate().setDuration(1000).y(loven.getHeight());
+							timerFloat = System.currentTimeMillis();
+						}
+					}
+					else{
+						timerFloat = System.currentTimeMillis();
+					}
 				}
 			}
 			
@@ -77,6 +93,7 @@ public class MainActivity extends Activity {
 			}
 		};
 		sm.registerListener(sel, s, SensorManager.SENSOR_DELAY_UI);
+		sm.registerListener(sel, sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
 	}
 
 	@Override
