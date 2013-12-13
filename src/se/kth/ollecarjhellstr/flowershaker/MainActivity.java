@@ -54,20 +54,20 @@ public class MainActivity extends Activity {
 			public void onSensorChanged(SensorEvent event) {
 				if(event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR){
 					float[] matrix = new float[16];
+					float[] remapMatrix = new float[16];
 					float[] orientation = new float[3];
 					SensorManager.getRotationMatrixFromVector(matrix, event.values);
-					SensorManager.remapCoordinateSystem(matrix,SensorManager.AXIS_X, SensorManager.AXIS_Z, matrix);
-					orientation = SensorManager.getOrientation(matrix, orientation);
-					xText.setText("X: "+Math.toDegrees(orientation[1]));
-					yText.setText("Y: "+Math.toDegrees(orientation[2]+Math.PI));
-					zText.setText("Z: "+Math.toDegrees(orientation[0]));
+					SensorManager.remapCoordinateSystem(matrix,SensorManager.AXIS_X, SensorManager.AXIS_Z, remapMatrix);
+					orientation = SensorManager.getOrientation(remapMatrix, orientation);
+					xText.setText("Pitch: "+Math.toDegrees(orientation[1]));
+					yText.setText("Roll: "+Math.toDegrees(orientation[2]));
+					zText.setText("Azimuth: "+Math.toDegrees(orientation[0]));
 					blomman.setPivotX(blomman.getWidth()/2);
 					blomman.setPivotY(blomman.getHeight());
 					blomman.setRotation((float) Math.toDegrees(orientation[2]));
 					loven.setPivotX(blomman.getWidth()/2);
 					loven.setPivotY(blomman.getHeight());
 					loven.setRotation((float) Math.toDegrees(orientation[2]));
-				
 				}
 			}
 			
